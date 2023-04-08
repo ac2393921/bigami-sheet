@@ -15,3 +15,7 @@ export const Layout = ({ children }: LayoutProps) => (
     {children}
   </>
 )
+
+export const getLayout = (page: React.ReactElement) => {
+  return <Layout>{page}</Layout>
+}
