@@ -1,19 +1,15 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Reggae_One } from "@next/font/google";
-import Image from 'next/image';
-import { AiFillAppstore, AiFillCaretDown } from "react-icons/ai";
-import { FaUserNinja } from "react-icons/fa";
 
-const reggaeone = Reggae_One({
-  weight: ["400"],
-  subsets: ["latin"],
-  display: "swap",
-});
+import Image from 'next/image';
+import { AiFillAppstore, AiFillCaretDown, AiFillDelete, AiFillPlusCircle, AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
+import { FaUserNinja } from "react-icons/fa";
+import Header from "../components/Header/header";
 
 const characters = [
   { id: 1, name: 'shinobi1', image: '/images/比良坂機関.gif', school: '比良坂機関', class: '中忍', user: 'user1', created_time: '2023.4.8' },
   { id: 2, name: 'shinobi2', image: '/images/比良坂機関.gif', school: '比良坂機関', class: '中忍頭', user: 'user1', created_time: '2023.4.8' },
+  { id: 3, name: 'shinobi3', image: '/images/私立御斎学園.gif', school: '私立御斎学園', class: '中忍', user: 'user2', created_time: '2023.4.8' },
   { id: 3, name: 'shinobi3', image: '/images/私立御斎学園.gif', school: '私立御斎学園', class: '中忍', user: 'user2', created_time: '2023.4.8' },
 ];
 
@@ -21,41 +17,7 @@ export default function Home() {
   return (
     <div>
       {/* Header */}
-      <header className="border-red-900 border-b-4 sticky top-0 z-50">
-        <nav className="bg-white border-gray-200 px-4 dark:bg-gray-800 relative">
-          <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-2xl">
-            <a href="https://flowbite.com" className="flex items-center">
-              <img
-                src="http://gakujo.info/sozai/shinobi.png"
-                className="mr-0 h-6 sm:h-9"
-                alt="Flowbite Logo"
-              />
-              <span className={reggaeone.className}>
-                <p className="self-center text-3xl whitespace-nowrap text-gray-800">
-                  ビガミ シート
-                </p>
-              </span>
-            </a>
-            <div className="flex items-center lg:order-2">
-              <a
-                href="#"
-                className="bg-green text-gray-800 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-2xl px-4 lg:px-5 py-2 lg:py-2.5 mr-2 flex items-center"
-              >
-                <img
-                  src="https://kohacu.com/wp-content/uploads/2020/10/kohacu.com_samune_003117.png"
-                  className="mr-1 h-6 sm:h-9"
-                  alt="Flowbite Logo"
-                />
-                <p className={reggaeone.className}>ログイン</p>
-              </a>
-            </div>
-            <div
-              className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1"
-              id="mobile-menu-2"
-            ></div>
-          </div>
-        </nav>
-      </header>
+      <Header />
       {/* Header */}
 
       {/* Sidebar */}
@@ -120,7 +82,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-white p-4 shadow h-full max-h-92">
+            <div className="bg-white p-4 shadow h-full">
               <table className="w-full whitespace-no-wrap table-auto">
                 <thead>
                   <tr
@@ -132,6 +94,9 @@ export default function Home() {
                     <th className="px-4 py-3">階級</th>
                     <th className="px-4 py-3">プレイヤー名</th>
                     <th className="px-4 py-3">Date</th>
+                    <th className="px-4 py-3 w-2"></th>
+                    <th className="px-4 py-3 w-2"></th>
+                    <th className="px-4 py-3 w-2"></th>
                   </tr>
                 </thead>
                 <tbody
@@ -178,7 +143,28 @@ export default function Home() {
                           {character.user}
                         </td>
                         <td className="px-4 py-3 text-sm">
-                        {character.created_time}
+                          {character.created_time}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <button className="bg-stone-700 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded">
+                            <AiOutlineEye 
+                              className="text-xl"
+                            />
+                          </button>
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <button className="bg-stone-700 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded">
+                            <AiOutlineEdit
+                              className="text-xl"
+                            />
+                          </button>
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <button className="bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 rounded">
+                            <AiFillDelete 
+                              className="text-xl"
+                            />
+                          </button>
                         </td>
                       </tr>
                     );
@@ -186,7 +172,12 @@ export default function Home() {
                 </tbody>
               </table>
             </div>
+          </div>
 
+          <div className="fixed right-16 bottom-20 z-70 rounded-full bg-white p-0 border-none">
+            <AiFillPlusCircle 
+              className="text-stone-800 text-6xl hover:text-stone-500"
+            />
           </div>
         </div>
       </div>
