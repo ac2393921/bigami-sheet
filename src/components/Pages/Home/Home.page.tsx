@@ -145,7 +145,7 @@ export const HomePage = () => (
         </div>
       </div>
 
-      <Link href={'/about'} className="fixed right-16 bottom-20 z-70 rounded-full bg-white p-0 border-none">
+      <Link href={'/create'} className="fixed right-16 bottom-20 z-70 rounded-full bg-white p-0 border-none">
         <AiFillPlusCircle 
           className="text-stone-800 text-6xl hover:text-stone-500"
         />

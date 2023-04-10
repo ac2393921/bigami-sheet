@@ -12,7 +12,9 @@ export const Layout = ({ children }: LayoutProps) => (
 
     <Sidebar />
 
-    {children}
+    <div className="bg-[url('/images/bg.jpg')] h-screen p-4 sm:ml-32">
+      {children}
+    </div>
   </>
 )
 
