@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "Bash(git -C /Users/ac2393921/work/github.com/ac2393921/bigami-sheet log --oneline -20)",
+      "Bash(git -C /Users/ac2393921/work/github.com/ac2393921/bigami-sheet show:*)",
+      "WebFetch(domain:trpgsheet.azurewebsites.net)",
+      "WebSearch",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\n🔥 chore: プロジェクトリセット - 0から再構築のため全ファイル削除\n\n- 既存のNext.js \\(Pages Router\\) コードを削除\n- Storybook関連ファイルを削除\n- 設定ファイルを削除\n- DESIGN.mdを追加（シノビガミキャラ管理サイト仕様書）\n- .claude/設定を追加\n\nこれからcreate-next-app \\(App Router\\) + shadcn/ui + Supabaseで再構築\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}
