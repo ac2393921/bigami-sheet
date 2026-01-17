@@ -12,6 +12,7 @@ interface UseCharactersReturn {
   loading: boolean
   error: Error | null
   fetchCharacters: () => Promise<void>
+  fetchCharacter: (id: string) => Promise<Character | null>
 }
 
 export function useCharacters(): UseCharactersReturn {
@@ -47,10 +48,39 @@ export function useCharacters(): UseCharactersReturn {
     }
   }
 
+  /**
+   * 指定した ID のキャラクターを取得する
+   */
+  const fetchCharacter = async (id: string): Promise<Character | null> => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const { data, error: fetchError } = await supabase
+        .from('characters')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (fetchError) {
+        setError(fetchError as Error)
+        return null
+      }
+
+      return (data as Character) || null
+    } catch (err) {
+      setError(err as Error)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     characters,
     loading,
     error,
     fetchCharacters,
+    fetchCharacter,
   }
 }
