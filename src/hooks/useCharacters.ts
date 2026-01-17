@@ -5,7 +5,7 @@
 
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import type { Character } from '@/types'
+import type { Character, CreateCharacterInput } from '@/types'
 
 interface UseCharactersReturn {
   characters: Character[]
@@ -13,6 +13,7 @@ interface UseCharactersReturn {
   error: Error | null
   fetchCharacters: () => Promise<void>
   fetchCharacter: (id: string) => Promise<Character | null>
+  createCharacter: (input: CreateCharacterInput) => Promise<Character | null>
 }
 
 export function useCharacters(): UseCharactersReturn {
@@ -76,11 +77,42 @@ export function useCharacters(): UseCharactersReturn {
     }
   }
 
+  /**
+   * 新しいキャラクターを作成する
+   */
+  const createCharacter = async (
+    input: CreateCharacterInput
+  ): Promise<Character | null> => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const { data, error: insertError } = await supabase
+        .from('characters')
+        .insert(input)
+        .select()
+        .single()
+
+      if (insertError) {
+        setError(insertError as Error)
+        return null
+      }
+
+      return (data as Character) || null
+    } catch (err) {
+      setError(err as Error)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     characters,
     loading,
     error,
     fetchCharacters,
     fetchCharacter,
+    createCharacter,
   }
 }
