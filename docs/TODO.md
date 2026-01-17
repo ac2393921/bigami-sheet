@@ -102,7 +102,7 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 ### フェーズ 6: キャラクター CRUD - 型とフック
 
 - [x] [RED] useCharacters フックの一覧取得テスト作成
-- [ ] [GREEN] 一覧取得機能の実装
+- [x] [GREEN] 一覧取得機能の実装
 - [ ] [RED] useCharacters フックの詳細取得テスト作成
 - [ ] [GREEN] 詳細取得機能の実装
 - [ ] [RED] useCharacters フックの作成機能テスト作成
