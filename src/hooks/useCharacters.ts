@@ -14,6 +14,11 @@ interface UseCharactersReturn {
   fetchCharacters: () => Promise<void>
   fetchCharacter: (id: string) => Promise<Character | null>
   createCharacter: (input: CreateCharacterInput) => Promise<Character | null>
+  updateCharacter: (
+    id: string,
+    input: Partial<CreateCharacterInput>
+  ) => Promise<Character | null>
+  deleteCharacter: (id: string) => Promise<boolean>
 }
 
 export function useCharacters(): UseCharactersReturn {
@@ -107,6 +112,65 @@ export function useCharacters(): UseCharactersReturn {
     }
   }
 
+  /**
+   * キャラクターを更新する
+   */
+  const updateCharacter = async (
+    id: string,
+    input: Partial<CreateCharacterInput>
+  ): Promise<Character | null> => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const { data, error: updateError } = await supabase
+        .from('characters')
+        .update(input)
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (updateError) {
+        setError(updateError as Error)
+        return null
+      }
+
+      return (data as Character) || null
+    } catch (err) {
+      setError(err as Error)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  /**
+   * キャラクターを削除する
+   */
+  const deleteCharacter = async (id: string): Promise<boolean> => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const { error: deleteError } = await supabase
+        .from('characters')
+        .delete()
+        .eq('id', id)
+
+      if (deleteError) {
+        setError(deleteError as Error)
+        return false
+      }
+
+      return true
+    } catch (err) {
+      setError(err as Error)
+      return false
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     characters,
     loading,
@@ -114,5 +178,7 @@ export function useCharacters(): UseCharactersReturn {
     fetchCharacters,
     fetchCharacter,
     createCharacter,
+    updateCharacter,
+    deleteCharacter,
   }
 }

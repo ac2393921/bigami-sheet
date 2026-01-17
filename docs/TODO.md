@@ -108,9 +108,9 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 - [x] [RED] useCharacters フックの作成機能テスト作成
 - [x] [GREEN] 作成機能の実装
 - [x] [RED] useCharacters フックの更新機能テスト作成
-- [ ] [GREEN] 更新機能の実装
+- [x] [GREEN] 更新機能の実装
 - [x] [RED] useCharacters フックの削除機能テスト作成
-- [ ] [GREEN] 削除機能の実装
+- [x] [GREEN] 削除機能の実装
 - [ ] [REFACTOR] CRUD 処理の共通化
 - [ ] [CHECK] lint/format/build の実行と確認
 
