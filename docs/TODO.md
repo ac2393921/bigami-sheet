@@ -105,7 +105,7 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 - [x] [GREEN] 一覧取得機能の実装
 - [x] [RED] useCharacters フックの詳細取得テスト作成
 - [x] [GREEN] 詳細取得機能の実装
-- [ ] [RED] useCharacters フックの作成機能テスト作成
+- [x] [RED] useCharacters フックの作成機能テスト作成
 - [ ] [GREEN] 作成機能の実装
 - [ ] [RED] useCharacters フックの更新機能テスト作成
 - [ ] [GREEN] 更新機能の実装

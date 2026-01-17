@@ -5,7 +5,7 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { useCharacters } from '../useCharacters'
 import { supabase } from '@/lib/supabase'
-import type { Character } from '@/types'
+import type { Character, CreateCharacterInput } from '@/types'
 
 // Supabase クライアントをモック
 jest.mock('@/lib/supabase', () => ({
@@ -331,6 +331,184 @@ describe('useCharacters - 詳細取得', () => {
     await fetchPromise
 
     await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+  })
+})
+
+describe('useCharacters - 作成機能', () => {
+  const mockSupabase = supabase as jest.Mocked<typeof supabase>
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('createCharacter を呼び出すとキャラクターを作成して返すこと', async () => {
+    const input: CreateCharacterInput = {
+      name: '新シノビ',
+      player_name: '新プレイヤー',
+      school: '斜歯忍軍',
+      rank: '中忍',
+      age: 25,
+      gender: '男',
+      life_points: 6,
+      achievement_points: 0,
+      is_public: true,
+    }
+
+    const mockCreatedCharacter: Partial<Character> = {
+      id: 'new-char-1',
+      user_id: 'user-1',
+      ...input,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
+
+    const mockFrom = jest.fn().mockReturnValue({
+      insert: jest.fn().mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({
+            data: mockCreatedCharacter,
+            error: null,
+          }),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const character = await result.current.createCharacter(input)
+
+    await waitFor(() => {
+      expect(character).toBeDefined()
+      expect(character?.name).toBe('新シノビ')
+      expect(character?.player_name).toBe('新プレイヤー')
+      expect(result.current.loading).toBe(false)
+    })
+
+    expect(mockSupabase.from).toHaveBeenCalledWith('characters')
+    const insertMock = mockFrom().insert
+    expect(insertMock).toHaveBeenCalledWith(input)
+  })
+
+  it('createCharacter でエラーが発生した場合、error にエラーが設定され null を返すこと', async () => {
+    const input: CreateCharacterInput = {
+      name: '新シノビ',
+      player_name: '新プレイヤー',
+      school: '斜歯忍軍',
+      rank: '中忍',
+    }
+
+    const mockError = new Error('作成エラー')
+
+    const mockFrom = jest.fn().mockReturnValue({
+      insert: jest.fn().mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({
+            data: null,
+            error: mockError,
+          }),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const character = await result.current.createCharacter(input)
+
+    await waitFor(() => {
+      expect(character).toBeNull()
+      expect(result.current.error).toBe(mockError)
+      expect(result.current.loading).toBe(false)
+    })
+  })
+
+  it('createCharacter の実行中は loading が true になること', async () => {
+    const input: CreateCharacterInput = {
+      name: '新シノビ',
+      player_name: '新プレイヤー',
+      school: '斜歯忍軍',
+      rank: '中忍',
+    }
+
+    let resolvePromise: (value: any) => void
+    const delayedPromise = new Promise((resolve) => {
+      resolvePromise = resolve
+    })
+
+    const mockFrom = jest.fn().mockReturnValue({
+      insert: jest.fn().mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          single: jest.fn().mockReturnValue(delayedPromise),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const createPromise = result.current.createCharacter(input)
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(true)
+    })
+
+    resolvePromise!({ data: null, error: null })
+    await createPromise
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+  })
+
+  it('デフォルト値が正しく設定されること', async () => {
+    const input: CreateCharacterInput = {
+      name: '新シノビ',
+      player_name: '新プレイヤー',
+      school: '斜歯忍軍',
+      rank: '中忍',
+    }
+
+    const mockCreatedCharacter: Partial<Character> = {
+      id: 'new-char-1',
+      user_id: 'user-1',
+      name: '新シノビ',
+      player_name: '新プレイヤー',
+      school: '斜歯忍軍',
+      rank: '中忍',
+      life_points: 6,
+      achievement_points: 0,
+      is_public: false,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
+
+    const mockFrom = jest.fn().mockReturnValue({
+      insert: jest.fn().mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({
+            data: mockCreatedCharacter,
+            error: null,
+          }),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const character = await result.current.createCharacter(input)
+
+    await waitFor(() => {
+      expect(character).toBeDefined()
+      // life_points のデフォルト値は 6
+      expect(character?.life_points).toBe(6)
+      // achievement_points のデフォルト値は 0
+      expect(character?.achievement_points).toBe(0)
+      // is_public のデフォルト値は false
+      expect(character?.is_public).toBe(false)
       expect(result.current.loading).toBe(false)
     })
   })
