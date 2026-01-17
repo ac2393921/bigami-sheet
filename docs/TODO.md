@@ -46,6 +46,7 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 **テーブル定義（DESIGN.md 4.2 参照）**
 
 #### characters テーブル
+
 - [x] Supabase SQL Editor で characters テーブルを作成
   - id (UUID, PK, default: gen_random_uuid())
   - user_id (UUID, FK → auth.users, NOT NULL)
@@ -64,6 +65,7 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
   - updated_at (TIMESTAMP, DEFAULT now())
 
 #### character_skills テーブル
+
 - [x] Supabase SQL Editor で character_skills テーブルを作成
   - id (UUID, PK, default: gen_random_uuid())
   - character_id (UUID, FK → characters.id, ON DELETE CASCADE)
@@ -73,6 +75,7 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
   - is_gap (BOOLEAN, DEFAULT false)
 
 #### RLS（Row Level Security）ポリシー
+
 - [x] characters テーブルの RLS を有効化
 - [x] characters テーブルの SELECT ポリシー設定（公開 OR 自分のデータ）
 - [x] characters テーブルの INSERT ポリシー設定（認証ユーザー）
