@@ -21,7 +21,9 @@
       "Bash(npm run format:*)",
       "Bash(npm run build:*)",
       "Bash(git commit:*)",
-      "Bash(npm test)"
+      "Bash(npm test)",
+      "Bash(ls:*)",
+      "Bash(npm test:*)"
     ]
   }
 }

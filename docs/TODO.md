@@ -32,14 +32,14 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 - [x] [REFACTOR] 型定義とマスターデータの整理
 - [x] [CHECK] lint/format/build の実行と確認
 
-### フェーズ 3: Supabase セットアップ
+### フェーズ 3: Supabase セットアップ ✅
 
-- [ ] supabase-js パッケージのインストール
-- [ ] 環境変数ファイル（.env.local）の設定
-- [ ] [RED] Supabase クライアントのテスト作成
-- [ ] [GREEN] Supabase クライアントの実装（src/lib/supabase.ts）
-- [ ] [REFACTOR] エラーハンドリングの改善
-- [ ] [CHECK] lint/format/build の実行と確認
+- [x] supabase-js パッケージのインストール
+- [x] 環境変数ファイル（.env.local）の設定
+- [x] [RED] Supabase クライアントのテスト作成
+- [x] [GREEN] Supabase クライアントの実装（src/lib/supabase.ts）
+- [x] [REFACTOR] エラーハンドリングの改善
+- [x] [CHECK] lint/format/build の実行と確認
 
 ### フェーズ 4: データベーススキーマ作成
 
