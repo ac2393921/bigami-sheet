@@ -22,14 +22,15 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 - [x] プロジェクト構造の作成（src/lib, src/contexts, src/types, src/hooks, src/components）
 - [x] [CHECK] lint/format/build の実行と確認
 
-### フェーズ 2: 型定義とマスターデータ
+### フェーズ 2: 型定義とマスターデータ ✅
 
-- [ ] [RED] 型定義（Character, Skill 等）のテスト作成
-- [ ] [GREEN] 型定義の実装（src/types/index.ts）
-- [ ] [RED] マスターデータ（流派、階級、特技）のテスト作成
-- [ ] [GREEN] マスターデータの実装
-- [ ] [REFACTOR] 型定義とマスターデータの整理
-- [ ] [CHECK] lint/format/build の実行と確認
+- [x] Jest + React Testing Library のセットアップ
+- [x] [RED] 型定義（Character, Skill 等）のテスト作成
+- [x] [GREEN] 型定義の実装（src/types/index.ts）
+- [x] [RED] マスターデータ（流派、階級、特技）のテスト作成
+- [x] [GREEN] マスターデータの実装
+- [x] [REFACTOR] 型定義とマスターデータの整理
+- [x] [CHECK] lint/format/build の実行と確認
 
 ### フェーズ 3: Supabase セットアップ
 
