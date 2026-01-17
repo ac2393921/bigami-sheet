@@ -205,3 +205,133 @@ describe('useCharacters - 一覧取得', () => {
     expect(orderMock).toHaveBeenCalledWith('created_at', { ascending: false })
   })
 })
+
+describe('useCharacters - 詳細取得', () => {
+  const mockSupabase = supabase as jest.Mocked<typeof supabase>
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('fetchCharacter を呼び出すと指定した ID のキャラクターを取得すること', async () => {
+    const mockCharacter: Partial<Character> = {
+      id: 'char-1',
+      user_id: 'user-1',
+      name: 'テストシノビ',
+      player_name: 'プレイヤー',
+      school: '斜歯忍軍',
+      rank: '中忍',
+      life_points: 6,
+      achievement_points: 0,
+      is_public: true,
+    }
+
+    const mockFrom = jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({
+            data: mockCharacter,
+            error: null,
+          }),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const character = await result.current.fetchCharacter('char-1')
+
+    await waitFor(() => {
+      expect(character).toBeDefined()
+      expect(character?.name).toBe('テストシノビ')
+      expect(character?.id).toBe('char-1')
+      expect(result.current.loading).toBe(false)
+    })
+
+    expect(mockSupabase.from).toHaveBeenCalledWith('characters')
+    const selectMock = mockFrom().select
+    const eqMock = selectMock().eq
+    expect(eqMock).toHaveBeenCalledWith('id', 'char-1')
+  })
+
+  it('存在しない ID を指定した場合 null を返すこと', async () => {
+    const mockFrom = jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({
+            data: null,
+            error: { message: 'Not found', code: '404' },
+          }),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const character = await result.current.fetchCharacter('non-existent-id')
+
+    await waitFor(() => {
+      expect(character).toBeNull()
+      expect(result.current.loading).toBe(false)
+    })
+  })
+
+  it('fetchCharacter でエラーが発生した場合、error にエラーが設定され null を返すこと', async () => {
+    const mockError = new Error('データベースエラー')
+
+    const mockFrom = jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({
+            data: null,
+            error: mockError,
+          }),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const character = await result.current.fetchCharacter('char-1')
+
+    await waitFor(() => {
+      expect(character).toBeNull()
+      expect(result.current.error).toBe(mockError)
+      expect(result.current.loading).toBe(false)
+    })
+  })
+
+  it('fetchCharacter の実行中は loading が true になること', async () => {
+    let resolvePromise: (value: any) => void
+    const delayedPromise = new Promise((resolve) => {
+      resolvePromise = resolve
+    })
+
+    const mockFrom = jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          single: jest.fn().mockReturnValue(delayedPromise),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const fetchPromise = result.current.fetchCharacter('char-1')
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(true)
+    })
+
+    resolvePromise!({ data: null, error: null })
+    await fetchPromise
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+  })
+})
