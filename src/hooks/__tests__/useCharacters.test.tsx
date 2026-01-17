@@ -557,7 +557,10 @@ describe('useCharacters - 更新機能', () => {
 
     const { result } = renderHook(() => useCharacters())
 
-    const character = await result.current.updateCharacter('char-1', updateInput)
+    const character = await result.current.updateCharacter(
+      'char-1',
+      updateInput
+    )
 
     await waitFor(() => {
       expect(character).toBeDefined()
@@ -596,7 +599,10 @@ describe('useCharacters - 更新機能', () => {
 
     const { result } = renderHook(() => useCharacters())
 
-    const character = await result.current.updateCharacter('char-1', updateInput)
+    const character = await result.current.updateCharacter(
+      'char-1',
+      updateInput
+    )
 
     await waitFor(() => {
       expect(character).toBeNull()
