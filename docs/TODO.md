@@ -116,8 +116,8 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 
 ### フェーズ 7: キャラクター作成フォーム
 
-- [ ] [RED] CharacterForm の基本レンダリングテスト作成
-- [ ] [GREEN] CharacterForm 基本 UI 実装（src/components/organisms/Form/CharacterForm.tsx）
+- [x] [RED] CharacterForm の基本レンダリングテスト作成
+- [x] [GREEN] CharacterForm 基本 UI 実装（src/components/organisms/Form/CharacterForm.tsx）
 - [ ] [RED] 基本情報入力フィールドのテスト作成
 - [ ] [GREEN] 基本情報入力フィールド実装（名前、プレイヤー名、流派、階級等）
 - [ ] [RED] バリデーションテスト作成
