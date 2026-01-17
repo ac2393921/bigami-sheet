@@ -12,7 +12,14 @@
       "Bash(git rm:*)",
       "Bash(git commit --amend -m \"$\\(cat <<''EOF''\n🔥 chore: プロジェクトリセット - 0から再構築のため全ファイル削除\n\n- 既存のNext.js \\(Pages Router\\) コードを削除\n- Storybook関連ファイルを削除\n- 設定ファイルを削除\n- DESIGN.mdを追加（シノビガミキャラ管理サイト仕様書）\n- .claude/設定を追加\n- .gitignoreを追加\n\nこれからcreate-next-app \\(App Router\\) + shadcn/ui + Supabaseで再構築\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git push:*)",
-      "Skill(planning-tasks)"
+      "Skill(planning-tasks)",
+      "Bash(npx create-next-app@13.3.0:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn-ui@latest add:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(npm run format:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }
