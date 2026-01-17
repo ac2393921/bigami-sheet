@@ -513,3 +513,220 @@ describe('useCharacters - 作成機能', () => {
     })
   })
 })
+
+describe('useCharacters - 更新機能', () => {
+  const mockSupabase = supabase as jest.Mocked<typeof supabase>
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('updateCharacter を呼び出すとキャラクターを更新して返すこと', async () => {
+    const updateInput: Partial<CreateCharacterInput> = {
+      name: '更新シノビ',
+      life_points: 5,
+    }
+
+    const mockUpdatedCharacter: Partial<Character> = {
+      id: 'char-1',
+      user_id: 'user-1',
+      name: '更新シノビ',
+      player_name: 'プレイヤー',
+      school: '斜歯忍軍',
+      rank: '中忍',
+      life_points: 5,
+      achievement_points: 0,
+      is_public: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
+
+    const mockFrom = jest.fn().mockReturnValue({
+      update: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          select: jest.fn().mockReturnValue({
+            single: jest.fn().mockResolvedValue({
+              data: mockUpdatedCharacter,
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const character = await result.current.updateCharacter('char-1', updateInput)
+
+    await waitFor(() => {
+      expect(character).toBeDefined()
+      expect(character?.name).toBe('更新シノビ')
+      expect(character?.life_points).toBe(5)
+      expect(result.current.loading).toBe(false)
+    })
+
+    expect(mockSupabase.from).toHaveBeenCalledWith('characters')
+    const updateMock = mockFrom().update
+    expect(updateMock).toHaveBeenCalledWith(updateInput)
+    const eqMock = updateMock().eq
+    expect(eqMock).toHaveBeenCalledWith('id', 'char-1')
+  })
+
+  it('updateCharacter でエラーが発生した場合、error にエラーが設定され null を返すこと', async () => {
+    const updateInput: Partial<CreateCharacterInput> = {
+      name: '更新シノビ',
+    }
+
+    const mockError = new Error('更新エラー')
+
+    const mockFrom = jest.fn().mockReturnValue({
+      update: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          select: jest.fn().mockReturnValue({
+            single: jest.fn().mockResolvedValue({
+              data: null,
+              error: mockError,
+            }),
+          }),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const character = await result.current.updateCharacter('char-1', updateInput)
+
+    await waitFor(() => {
+      expect(character).toBeNull()
+      expect(result.current.error).toBe(mockError)
+      expect(result.current.loading).toBe(false)
+    })
+  })
+
+  it('updateCharacter の実行中は loading が true になること', async () => {
+    const updateInput: Partial<CreateCharacterInput> = {
+      name: '更新シノビ',
+    }
+
+    let resolvePromise: (value: any) => void
+    const delayedPromise = new Promise((resolve) => {
+      resolvePromise = resolve
+    })
+
+    const mockFrom = jest.fn().mockReturnValue({
+      update: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          select: jest.fn().mockReturnValue({
+            single: jest.fn().mockReturnValue(delayedPromise),
+          }),
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const updatePromise = result.current.updateCharacter('char-1', updateInput)
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(true)
+    })
+
+    resolvePromise!({ data: null, error: null })
+    await updatePromise
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+  })
+})
+
+describe('useCharacters - 削除機能', () => {
+  const mockSupabase = supabase as jest.Mocked<typeof supabase>
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('deleteCharacter を呼び出すとキャラクターを削除して true を返すこと', async () => {
+    const mockFrom = jest.fn().mockReturnValue({
+      delete: jest.fn().mockReturnValue({
+        eq: jest.fn().mockResolvedValue({
+          data: null,
+          error: null,
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const success = await result.current.deleteCharacter('char-1')
+
+    await waitFor(() => {
+      expect(success).toBe(true)
+      expect(result.current.loading).toBe(false)
+    })
+
+    expect(mockSupabase.from).toHaveBeenCalledWith('characters')
+    const deleteMock = mockFrom().delete
+    expect(deleteMock).toHaveBeenCalled()
+    const eqMock = deleteMock().eq
+    expect(eqMock).toHaveBeenCalledWith('id', 'char-1')
+  })
+
+  it('deleteCharacter でエラーが発生した場合、error にエラーが設定され false を返すこと', async () => {
+    const mockError = new Error('削除エラー')
+
+    const mockFrom = jest.fn().mockReturnValue({
+      delete: jest.fn().mockReturnValue({
+        eq: jest.fn().mockResolvedValue({
+          data: null,
+          error: mockError,
+        }),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const success = await result.current.deleteCharacter('char-1')
+
+    await waitFor(() => {
+      expect(success).toBe(false)
+      expect(result.current.error).toBe(mockError)
+      expect(result.current.loading).toBe(false)
+    })
+  })
+
+  it('deleteCharacter の実行中は loading が true になること', async () => {
+    let resolvePromise: (value: any) => void
+    const delayedPromise = new Promise((resolve) => {
+      resolvePromise = resolve
+    })
+
+    const mockFrom = jest.fn().mockReturnValue({
+      delete: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue(delayedPromise),
+      }),
+    })
+    mockSupabase.from = mockFrom
+
+    const { result } = renderHook(() => useCharacters())
+
+    const deletePromise = result.current.deleteCharacter('char-1')
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(true)
+    })
+
+    resolvePromise!({ data: null, error: null })
+    await deletePromise
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+  })
+})
