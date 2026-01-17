@@ -41,12 +41,12 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 - [x] [REFACTOR] エラーハンドリングの改善
 - [x] [CHECK] lint/format/build の実行と確認
 
-### フェーズ 4: データベーススキーマ作成
+### フェーズ 4: データベーススキーマ作成 ✅
 
 **テーブル定義（DESIGN.md 4.2 参照）**
 
 #### characters テーブル
-- [ ] Supabase SQL Editor で characters テーブルを作成
+- [x] Supabase SQL Editor で characters テーブルを作成
   - id (UUID, PK, default: gen_random_uuid())
   - user_id (UUID, FK → auth.users, NOT NULL)
   - name (TEXT, NOT NULL)
@@ -64,7 +64,7 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
   - updated_at (TIMESTAMP, DEFAULT now())
 
 #### character_skills テーブル
-- [ ] Supabase SQL Editor で character_skills テーブルを作成
+- [x] Supabase SQL Editor で character_skills テーブルを作成
   - id (UUID, PK, default: gen_random_uuid())
   - character_id (UUID, FK → characters.id, ON DELETE CASCADE)
   - skill_category (TEXT, NOT NULL)
@@ -73,14 +73,14 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
   - is_gap (BOOLEAN, DEFAULT false)
 
 #### RLS（Row Level Security）ポリシー
-- [ ] characters テーブルの RLS を有効化
-- [ ] characters テーブルの SELECT ポリシー設定（公開 OR 自分のデータ）
-- [ ] characters テーブルの INSERT ポリシー設定（認証ユーザー）
-- [ ] characters テーブルの UPDATE ポリシー設定（自分のデータのみ）
-- [ ] characters テーブルの DELETE ポリシー設定（自分のデータのみ）
-- [ ] character_skills テーブルの RLS を有効化
-- [ ] character_skills テーブルのポリシー設定（characters と同じロジック）
-- [ ] [CHECK] Supabase ダッシュボードでスキーマとポリシーを確認
+- [x] characters テーブルの RLS を有効化
+- [x] characters テーブルの SELECT ポリシー設定（公開 OR 自分のデータ）
+- [x] characters テーブルの INSERT ポリシー設定（認証ユーザー）
+- [x] characters テーブルの UPDATE ポリシー設定（自分のデータのみ）
+- [x] characters テーブルの DELETE ポリシー設定（自分のデータのみ）
+- [x] character_skills テーブルの RLS を有効化
+- [x] character_skills テーブルのポリシー設定（characters と同じロジック）
+- [x] [CHECK] Supabase ダッシュボードでスキーマとポリシーを確認
 
 ### フェーズ 5: 認証機能の実装
 
