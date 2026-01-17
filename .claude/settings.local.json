@@ -20,7 +20,8 @@
       "Bash(npx shadcn@latest add:*)",
       "Bash(npm run format:*)",
       "Bash(npm run build:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm test)"
     ]
   }
 }
