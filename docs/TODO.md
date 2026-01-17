@@ -93,9 +93,9 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 - [x] [GREEN] useAuth フック実装（src/hooks/useAuth.ts）
 - [x] [RED] ログインページのレンダリングテスト作成
 - [x] [GREEN] ログインページ UI 実装（src/pages/login.tsx）
-- [ ] [RED] Header ログインボタンのテスト作成
-- [ ] [GREEN] Header ログインボタン機能実装
-- [ ] [REFACTOR] 認証関連コードの整理
+- [x] [RED] Header ログインボタンのテスト作成
+- [x] [GREEN] Header ログインボタン機能実装
+- [x] [REFACTOR] 認証関連コードの整理
 - [x] [CHECK] lint/format/build の実行と確認
 - [ ] Supabase ダッシュボードでソーシャルログイン設定（Google, Twitter, Discord）
 
