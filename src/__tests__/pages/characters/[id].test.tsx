@@ -3,6 +3,7 @@
  */
 
 import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { ReactNode } from 'react'
 import CharacterDetailPage from '@/pages/characters/[id]'
 import { AuthProvider } from '@/contexts/AuthContext'
@@ -319,7 +320,7 @@ describe('CharacterDetailPage', () => {
     })
 
     it('削除ボタンをクリックすると確認ダイアログが表示される', async () => {
-      const user = (await import('@testing-library/user-event')).default
+      const user = userEvent
       mockFetchCharacter.mockResolvedValue(mockCharacter)
 
       mockSupabase.auth.getSession.mockResolvedValue({
@@ -340,7 +341,6 @@ describe('CharacterDetailPage', () => {
         })),
       }))
       mockSupabase.from = mockFrom as any
-
       ;(global.confirm as jest.Mock).mockReturnValue(false)
 
       render(<CharacterDetailPage />, { wrapper: Wrapper })
@@ -356,7 +356,7 @@ describe('CharacterDetailPage', () => {
     })
 
     it('確認ダイアログでキャンセルした場合、削除されない', async () => {
-      const user = (await import('@testing-library/user-event')).default
+      const user = userEvent
       const mockDeleteCharacter = jest.fn()
       mockFetchCharacter.mockResolvedValue(mockCharacter)
 
@@ -389,7 +389,6 @@ describe('CharacterDetailPage', () => {
         })),
       }))
       mockSupabase.from = mockFrom as any
-
       ;(global.confirm as jest.Mock).mockReturnValue(false)
 
       render(<CharacterDetailPage />, { wrapper: Wrapper })
@@ -406,7 +405,7 @@ describe('CharacterDetailPage', () => {
     })
 
     it('確認ダイアログでOKした場合、削除され一覧ページへ遷移する', async () => {
-      const user = (await import('@testing-library/user-event')).default
+      const user = userEvent
       const mockDeleteCharacter = jest.fn().mockResolvedValue(true)
       mockFetchCharacter.mockResolvedValue(mockCharacter)
 
@@ -439,7 +438,6 @@ describe('CharacterDetailPage', () => {
         })),
       }))
       mockSupabase.from = mockFrom as any
-
       ;(global.confirm as jest.Mock).mockReturnValue(true)
 
       render(<CharacterDetailPage />, { wrapper: Wrapper })
@@ -458,7 +456,7 @@ describe('CharacterDetailPage', () => {
     })
 
     it('削除失敗時、エラーメッセージが表示される', async () => {
-      const user = (await import('@testing-library/user-event')).default
+      const user = userEvent
       const mockDeleteCharacter = jest.fn().mockResolvedValue(false)
       mockFetchCharacter.mockResolvedValue(mockCharacter)
 
@@ -491,7 +489,6 @@ describe('CharacterDetailPage', () => {
         })),
       }))
       mockSupabase.from = mockFrom as any
-
       ;(global.confirm as jest.Mock).mockReturnValue(true)
 
       render(<CharacterDetailPage />, { wrapper: Wrapper })

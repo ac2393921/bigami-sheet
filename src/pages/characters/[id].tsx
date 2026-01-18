@@ -16,12 +16,13 @@ export default function CharacterDetailPage() {
   const router = useRouter()
   const { id } = router.query
   const { user } = useAuthContext()
-  const { fetchCharacter } = useCharacters()
+  const { fetchCharacter, deleteCharacter } = useCharacters()
 
   const [character, setCharacter] = useState<Character | null>(null)
   const [skills, setSkills] = useState<CharacterSkill[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadData = async () => {
@@ -71,7 +72,21 @@ export default function CharacterDetailPage() {
   }
 
   const handleDelete = async () => {
-    // TODO: 削除機能は次のサイクルで実装
+    if (!window.confirm('本当に削除しますか？')) {
+      return
+    }
+
+    if (typeof id !== 'string') {
+      return
+    }
+
+    const success = await deleteCharacter(id)
+
+    if (success) {
+      router.push('/')
+    } else {
+      setDeleteError('削除に失敗しました')
+    }
   }
 
   // 所有者判定
@@ -115,6 +130,13 @@ export default function CharacterDetailPage() {
           <h1 className="text-3xl font-semibold tracking-tight text-sumi mb-8">
             キャラクター詳細
           </h1>
+
+          {/* 削除エラーメッセージ */}
+          {deleteError && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-destructive">
+              {deleteError}
+            </div>
+          )}
 
           {/* キャラクター詳細情報 */}
           <div className="mb-8">
