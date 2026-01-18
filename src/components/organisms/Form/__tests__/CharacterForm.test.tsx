@@ -2,7 +2,7 @@
  * CharacterForm コンポーネントのテスト
  */
 
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { CharacterForm } from '../CharacterForm'
 
 describe('CharacterForm', () => {
@@ -131,6 +131,94 @@ describe('CharacterForm', () => {
         /公開する/i
       ) as HTMLInputElement
       expect(isPublicCheckbox.checked).toBe(false)
+    })
+  })
+
+  describe('バリデーション', () => {
+    it('必須フィールドが空の場合、onSubmitが呼ばれないこと', () => {
+      const mockOnSubmit = jest.fn()
+      render(<CharacterForm onSubmit={mockOnSubmit} />)
+
+      const submitButton = screen.getByRole('button', { name: /保存/i })
+      fireEvent.click(submitButton)
+
+      expect(mockOnSubmit).not.toHaveBeenCalled()
+    })
+
+    it('シノビ名のみ入力した場合、onSubmitが呼ばれないこと', () => {
+      const mockOnSubmit = jest.fn()
+      const initialData = {
+        name: 'テストシノビ',
+      }
+      render(
+        <CharacterForm onSubmit={mockOnSubmit} initialData={initialData} />
+      )
+
+      const submitButton = screen.getByRole('button', { name: /保存/i })
+      fireEvent.click(submitButton)
+
+      expect(mockOnSubmit).not.toHaveBeenCalled()
+    })
+
+    it('すべての必須フィールドが入力された場合、onSubmitが呼ばれること', () => {
+      const mockOnSubmit = jest.fn()
+      const initialData = {
+        name: 'テストシノビ',
+        player_name: 'テストプレイヤー',
+        school: '斜歯忍軍' as const,
+        rank: '中忍' as const,
+      }
+      render(
+        <CharacterForm onSubmit={mockOnSubmit} initialData={initialData} />
+      )
+
+      const submitButton = screen.getByRole('button', { name: /保存/i })
+      fireEvent.click(submitButton)
+
+      expect(mockOnSubmit).toHaveBeenCalledTimes(1)
+      expect(mockOnSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'テストシノビ',
+          player_name: 'テストプレイヤー',
+          school: '斜歯忍軍',
+          rank: '中忍',
+        })
+      )
+    })
+
+    it('オプションフィールドも含めて送信できること', () => {
+      const mockOnSubmit = jest.fn()
+      const initialData = {
+        name: 'テストシノビ',
+        player_name: 'テストプレイヤー',
+        school: '斜歯忍軍' as const,
+        rank: '中忍' as const,
+        age: 25,
+        gender: '男性',
+        cover: '学生',
+        belief: '正義',
+        is_public: true,
+      }
+      render(
+        <CharacterForm onSubmit={mockOnSubmit} initialData={initialData} />
+      )
+
+      const submitButton = screen.getByRole('button', { name: /保存/i })
+      fireEvent.click(submitButton)
+
+      expect(mockOnSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'テストシノビ',
+          player_name: 'テストプレイヤー',
+          school: '斜歯忍軍',
+          rank: '中忍',
+          age: 25,
+          gender: '男性',
+          cover: '学生',
+          belief: '正義',
+          is_public: true,
+        })
+      )
     })
   })
 })

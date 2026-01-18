@@ -120,8 +120,8 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 - [x] [GREEN] CharacterForm 基本 UI 実装（src/components/organisms/Form/CharacterForm.tsx）
 - [x] [RED] 基本情報入力フィールドのテスト作成
 - [x] [GREEN] 基本情報入力フィールド実装（名前、プレイヤー名、流派、階級等）
-- [ ] [RED] バリデーションテスト作成
-- [ ] [GREEN] バリデーション実装
+- [x] [RED] バリデーションテスト作成
+- [x] [GREEN] バリデーション実装
 - [ ] [RED] 保存処理のテスト作成
 - [ ] [GREEN] Supabase への保存処理実装
 - [ ] [REFACTOR] フォームコンポーネントの整理
