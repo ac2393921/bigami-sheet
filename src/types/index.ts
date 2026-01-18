@@ -159,6 +159,11 @@ export interface CreateCharacterInput {
   is_public?: boolean
 }
 
+// Character + Skills 作成用の型（フォーム用）
+export interface CreateCharacterWithSkillsInput extends CreateCharacterInput {
+  skills?: CharacterSkill[]
+}
+
 // CharacterSkill 作成用の型（必須項目のみ）
 export interface CreateCharacterSkillInput {
   character_id: string

@@ -13,15 +13,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { SCHOOLS, RANKS, type CreateCharacterInput } from '@/types'
+import {
+  SCHOOLS,
+  RANKS,
+  type CreateCharacterWithSkillsInput,
+  type CharacterSkill,
+} from '@/types'
+import { SkillTable } from '../SkillTable/SkillTable'
 
 interface CharacterFormProps {
-  onSubmit: (data: CreateCharacterInput) => void
-  initialData?: Partial<CreateCharacterInput>
+  onSubmit: (data: CreateCharacterWithSkillsInput) => void
+  initialData?: Partial<CreateCharacterWithSkillsInput>
 }
 
 export function CharacterForm({ onSubmit, initialData }: CharacterFormProps) {
-  const [formData, setFormData] = useState<Partial<CreateCharacterInput>>({
+  const [formData, setFormData] = useState<
+    Partial<CreateCharacterWithSkillsInput>
+  >({
     name: initialData?.name || '',
     player_name: initialData?.player_name || '',
     school: initialData?.school,
@@ -34,6 +42,10 @@ export function CharacterForm({ onSubmit, initialData }: CharacterFormProps) {
     achievement_points: initialData?.achievement_points || 0,
     is_public: initialData?.is_public || false,
   })
+
+  const [skills, setSkills] = useState<CharacterSkill[]>(
+    initialData?.skills || []
+  )
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,7 +60,10 @@ export function CharacterForm({ onSubmit, initialData }: CharacterFormProps) {
       return
     }
 
-    onSubmit(formData as CreateCharacterInput)
+    onSubmit({
+      ...(formData as CreateCharacterWithSkillsInput),
+      skills,
+    })
   }
 
   return (
@@ -240,6 +255,12 @@ export function CharacterForm({ onSubmit, initialData }: CharacterFormProps) {
         <label htmlFor="is_public" className="text-sm font-medium">
           公開する
         </label>
+      </div>
+
+      {/* 特技表 */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">特技</label>
+        <SkillTable skills={skills} onSkillsChange={setSkills} />
       </div>
 
       {/* 保存ボタン */}

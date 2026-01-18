@@ -221,4 +221,87 @@ describe('CharacterForm', () => {
       )
     })
   })
+
+  describe('特技表統合', () => {
+    it('SkillTable が表示されること', () => {
+      const mockOnSubmit = jest.fn()
+      render(<CharacterForm onSubmit={mockOnSubmit} />)
+
+      // 特技表のヘッダーが存在することを確認
+      expect(screen.getByText('器術')).toBeInTheDocument()
+      expect(screen.getByText('体術')).toBeInTheDocument()
+      expect(screen.getByText('忍術')).toBeInTheDocument()
+      expect(screen.getByText('謀術')).toBeInTheDocument()
+      expect(screen.getByText('戦術')).toBeInTheDocument()
+      expect(screen.getByText('妖術')).toBeInTheDocument()
+    })
+
+    it('特技を選択して送信できること', async () => {
+      const mockOnSubmit = jest.fn()
+      const initialData = {
+        name: 'テストシノビ',
+        player_name: 'テストプレイヤー',
+        school: '斜歯忍軍' as const,
+        rank: '中忍' as const,
+      }
+      render(
+        <CharacterForm onSubmit={mockOnSubmit} initialData={initialData} />
+      )
+
+      // 特技をクリック（絡繰術を習得）
+      const skillCell = screen.getByText('絡繰術')
+      fireEvent.click(skillCell.closest('td')!)
+
+      // フォームを送信
+      const submitButton = screen.getByRole('button', { name: /保存/i })
+      fireEvent.click(submitButton)
+
+      // onSubmit が特技データ込みで呼ばれることを確認
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'テストシノビ',
+            player_name: 'テストプレイヤー',
+            school: '斜歯忍軍',
+            rank: '中忍',
+            skills: expect.arrayContaining([
+              expect.objectContaining({
+                skill_category: '器術',
+                skill_name: '絡繰術',
+                is_acquired: true,
+                is_gap: false,
+              }),
+            ]),
+          })
+        )
+      })
+    })
+
+    it('初期特技データが正しく表示されること', () => {
+      const mockOnSubmit = jest.fn()
+      const initialData = {
+        name: 'テストシノビ',
+        player_name: 'テストプレイヤー',
+        school: '斜歯忍軍' as const,
+        rank: '中忍' as const,
+        skills: [
+          {
+            id: 'test-1',
+            character_id: 'char-1',
+            skill_category: '器術' as const,
+            skill_name: '絡繰術',
+            is_acquired: true,
+            is_gap: false,
+          },
+        ],
+      }
+      render(
+        <CharacterForm onSubmit={mockOnSubmit} initialData={initialData} />
+      )
+
+      // 習得済みの特技が表示されていることを確認
+      const skillCell = screen.getByText('絡繰術').closest('td')!
+      expect(skillCell.textContent).toContain('■')
+    })
+  })
 })
