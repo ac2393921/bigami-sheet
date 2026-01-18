@@ -19,13 +19,14 @@ export default function CharacterEditPage() {
   const router = useRouter()
   const { id } = router.query
   const { user, loading: authLoading } = useAuthContext()
-  const { fetchCharacter } = useCharacters()
+  const { fetchCharacter, updateCharacter } = useCharacters()
 
   const [character, setCharacter] = useState<Character | null>(null)
   const [initialData, setInitialData] =
     useState<Partial<CreateCharacterWithSkillsInput> | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [updateError, setUpdateError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadData = async () => {
@@ -98,7 +99,59 @@ export default function CharacterEditPage() {
   }, [id, fetchCharacter, user, router, authLoading])
 
   const handleSubmit = async (data: CreateCharacterWithSkillsInput) => {
-    // TODO: 更新機能は次のサイクルで実装
+    if (typeof id !== 'string') {
+      return
+    }
+
+    setUpdateError(null)
+
+    try {
+      // 1. 特技データを分離
+      const { skills, ...characterData } = data
+
+      // 2. キャラクター本体を更新
+      const updatedCharacter = await updateCharacter(id, characterData)
+
+      if (!updatedCharacter) {
+        setUpdateError('データの保存に失敗しました')
+        return
+      }
+
+      // 3. 既存の特技データを削除
+      const { error: deleteError } = await supabase
+        .from('character_skills')
+        .delete()
+        .eq('character_id', id)
+
+      if (deleteError) {
+        console.error('特技データの削除に失敗しました:', deleteError)
+      }
+
+      // 4. 新しい特技データを挿入
+      if (skills && skills.length > 0) {
+        const skillsToInsert = skills.map((skill) => ({
+          character_id: id,
+          skill_category: skill.skill_category,
+          skill_name: skill.skill_name,
+          is_acquired: skill.is_acquired,
+          is_gap: skill.is_gap,
+        }))
+
+        const { error: insertError } = await supabase
+          .from('character_skills')
+          .insert(skillsToInsert)
+
+        if (insertError) {
+          console.error('特技データの保存に失敗しました:', insertError)
+        }
+      }
+
+      // 5. 詳細ページへリダイレクト
+      router.push(`/characters/${id}`)
+    } catch (err) {
+      console.error('データの更新に失敗しました:', err)
+      setUpdateError('データの保存に失敗しました')
+    }
   }
 
   if (loading) {
@@ -139,6 +192,14 @@ export default function CharacterEditPage() {
           <h1 className="text-3xl font-semibold tracking-tight text-sumi mb-8">
             キャラクター編集
           </h1>
+
+          {/* 更新エラーメッセージ */}
+          {updateError && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-destructive">
+              {updateError}
+            </div>
+          )}
+
           <div className="bg-white rounded-lg shadow-md p-6">
             <CharacterForm onSubmit={handleSubmit} initialData={initialData} />
           </div>
