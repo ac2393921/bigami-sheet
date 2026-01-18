@@ -149,16 +149,22 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 - [x] [REFACTOR] ページコンポーネントの整理（不要と判断）
 - [x] [CHECK] lint/format/build の実行と確認
 
-### フェーズ 10: キャラクター詳細・編集ページ
+### フェーズ 10: キャラクター詳細・編集ページ ✅
 
-- [ ] [RED] 詳細ページのレンダリングテスト作成
-- [ ] [GREEN] 詳細ページ UI 実装（src/pages/characters/[id].tsx）
-- [ ] [RED] 編集ページのレンダリングテスト作成
-- [ ] [GREEN] 編集ページ UI 実装（src/pages/characters/[id]/edit.tsx）
-- [ ] [RED] 更新処理のテスト作成
-- [ ] [GREEN] 更新処理実装
-- [ ] [REFACTOR] 詳細・編集ページの共通化
-- [ ] [CHECK] lint/format/build の実行と確認
+- [x] [RED] ReadOnlySkillTable のテスト作成
+- [x] [GREEN] ReadOnlySkillTable 実装（src/components/organisms/SkillTable/ReadOnlySkillTable.tsx）
+- [x] [RED] CharacterDetailView のテスト作成
+- [x] [GREEN] CharacterDetailView 実装（src/components/organisms/Detail/CharacterDetailView.tsx）
+- [x] [RED] 詳細ページ基本機能のテスト作成
+- [x] [GREEN] 詳細ページ基本機能実装（src/pages/characters/[id].tsx）
+- [x] [RED] 詳細ページ削除機能のテスト作成
+- [x] [GREEN] 詳細ページ削除機能実装
+- [x] [RED] 編集ページ基本機能のテスト作成
+- [x] [GREEN] 編集ページ基本機能実装（src/pages/characters/[id]/edit.tsx）
+- [x] [RED] 編集ページ更新機能のテスト作成
+- [x] [GREEN] 編集ページ更新機能実装
+- [x] [REFACTOR] 詳細・編集ページの共通化（不要と判断）
+- [x] [CHECK] lint/format/build の実行と確認
 
 ### フェーズ 11: キャラクター一覧・検索機能
 
