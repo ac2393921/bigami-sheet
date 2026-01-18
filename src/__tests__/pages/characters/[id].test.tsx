@@ -307,6 +307,208 @@ describe('CharacterDetailPage', () => {
     })
   })
 
+  describe('削除機能', () => {
+    beforeEach(() => {
+      // window.confirmをモック
+      global.confirm = jest.fn()
+    })
+
+    afterEach(() => {
+      // モックをクリーンアップ
+      jest.restoreAllMocks()
+    })
+
+    it('削除ボタンをクリックすると確認ダイアログが表示される', async () => {
+      const user = (await import('@testing-library/user-event')).default
+      mockFetchCharacter.mockResolvedValue(mockCharacter)
+
+      mockSupabase.auth.getSession.mockResolvedValue({
+        data: {
+          session: {
+            user: { id: 'user-1' },
+          } as any,
+        },
+        error: null,
+      })
+
+      const mockFrom = jest.fn(() => ({
+        select: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            data: mockSkills,
+            error: null,
+          })),
+        })),
+      }))
+      mockSupabase.from = mockFrom as any
+
+      ;(global.confirm as jest.Mock).mockReturnValue(false)
+
+      render(<CharacterDetailPage />, { wrapper: Wrapper })
+
+      await waitFor(() => {
+        expect(screen.getByText('テストシノビ')).toBeInTheDocument()
+      })
+
+      const deleteButton = screen.getByRole('button', { name: /削除/i })
+      await user.setup().click(deleteButton)
+
+      expect(global.confirm).toHaveBeenCalledWith('本当に削除しますか？')
+    })
+
+    it('確認ダイアログでキャンセルした場合、削除されない', async () => {
+      const user = (await import('@testing-library/user-event')).default
+      const mockDeleteCharacter = jest.fn()
+      mockFetchCharacter.mockResolvedValue(mockCharacter)
+
+      mockUseCharacters.mockReturnValue({
+        characters: [],
+        loading: false,
+        error: null,
+        fetchCharacters: jest.fn(),
+        fetchCharacter: mockFetchCharacter,
+        createCharacter: jest.fn(),
+        updateCharacter: jest.fn(),
+        deleteCharacter: mockDeleteCharacter,
+      })
+
+      mockSupabase.auth.getSession.mockResolvedValue({
+        data: {
+          session: {
+            user: { id: 'user-1' },
+          } as any,
+        },
+        error: null,
+      })
+
+      const mockFrom = jest.fn(() => ({
+        select: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            data: mockSkills,
+            error: null,
+          })),
+        })),
+      }))
+      mockSupabase.from = mockFrom as any
+
+      ;(global.confirm as jest.Mock).mockReturnValue(false)
+
+      render(<CharacterDetailPage />, { wrapper: Wrapper })
+
+      await waitFor(() => {
+        expect(screen.getByText('テストシノビ')).toBeInTheDocument()
+      })
+
+      const deleteButton = screen.getByRole('button', { name: /削除/i })
+      await user.setup().click(deleteButton)
+
+      expect(mockDeleteCharacter).not.toHaveBeenCalled()
+      expect(mockPush).not.toHaveBeenCalled()
+    })
+
+    it('確認ダイアログでOKした場合、削除され一覧ページへ遷移する', async () => {
+      const user = (await import('@testing-library/user-event')).default
+      const mockDeleteCharacter = jest.fn().mockResolvedValue(true)
+      mockFetchCharacter.mockResolvedValue(mockCharacter)
+
+      mockUseCharacters.mockReturnValue({
+        characters: [],
+        loading: false,
+        error: null,
+        fetchCharacters: jest.fn(),
+        fetchCharacter: mockFetchCharacter,
+        createCharacter: jest.fn(),
+        updateCharacter: jest.fn(),
+        deleteCharacter: mockDeleteCharacter,
+      })
+
+      mockSupabase.auth.getSession.mockResolvedValue({
+        data: {
+          session: {
+            user: { id: 'user-1' },
+          } as any,
+        },
+        error: null,
+      })
+
+      const mockFrom = jest.fn(() => ({
+        select: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            data: mockSkills,
+            error: null,
+          })),
+        })),
+      }))
+      mockSupabase.from = mockFrom as any
+
+      ;(global.confirm as jest.Mock).mockReturnValue(true)
+
+      render(<CharacterDetailPage />, { wrapper: Wrapper })
+
+      await waitFor(() => {
+        expect(screen.getByText('テストシノビ')).toBeInTheDocument()
+      })
+
+      const deleteButton = screen.getByRole('button', { name: /削除/i })
+      await user.setup().click(deleteButton)
+
+      await waitFor(() => {
+        expect(mockDeleteCharacter).toHaveBeenCalledWith('char-1')
+        expect(mockPush).toHaveBeenCalledWith('/')
+      })
+    })
+
+    it('削除失敗時、エラーメッセージが表示される', async () => {
+      const user = (await import('@testing-library/user-event')).default
+      const mockDeleteCharacter = jest.fn().mockResolvedValue(false)
+      mockFetchCharacter.mockResolvedValue(mockCharacter)
+
+      mockUseCharacters.mockReturnValue({
+        characters: [],
+        loading: false,
+        error: null,
+        fetchCharacters: jest.fn(),
+        fetchCharacter: mockFetchCharacter,
+        createCharacter: jest.fn(),
+        updateCharacter: jest.fn(),
+        deleteCharacter: mockDeleteCharacter,
+      })
+
+      mockSupabase.auth.getSession.mockResolvedValue({
+        data: {
+          session: {
+            user: { id: 'user-1' },
+          } as any,
+        },
+        error: null,
+      })
+
+      const mockFrom = jest.fn(() => ({
+        select: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            data: mockSkills,
+            error: null,
+          })),
+        })),
+      }))
+      mockSupabase.from = mockFrom as any
+
+      ;(global.confirm as jest.Mock).mockReturnValue(true)
+
+      render(<CharacterDetailPage />, { wrapper: Wrapper })
+
+      await waitFor(() => {
+        expect(screen.getByText('テストシノビ')).toBeInTheDocument()
+      })
+
+      const deleteButton = screen.getByRole('button', { name: /削除/i })
+      await user.setup().click(deleteButton)
+
+      await waitFor(() => {
+        expect(screen.getByText(/削除に失敗しました/i)).toBeInTheDocument()
+      })
+    })
+  })
+
   describe('エラー処理', () => {
     it('キャラクターが見つからない場合、エラーメッセージが表示される', async () => {
       mockFetchCharacter.mockResolvedValue(null)
