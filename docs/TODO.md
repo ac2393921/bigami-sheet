@@ -131,14 +131,14 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 
 - [x] [RED] SkillTable の 6x11 グリッドレンダリングテスト作成
 - [x] [GREEN] SkillTable 基本 UI 実装（src/components/organisms/SkillTable/SkillTable.tsx）
-- [ ] [RED] 習得チェック機能のテスト作成
-- [ ] [GREEN] 習得チェック機能実装
-- [ ] [RED] ギャップ設定機能のテスト作成
-- [ ] [GREEN] ギャップ設定機能実装
+- [x] [RED] 習得チェック機能のテスト作成
+- [x] [GREEN] 習得チェック機能実装
+- [x] [RED] ギャップ設定機能のテスト作成
+- [x] [GREEN] ギャップ設定機能実装
 - [ ] [RED] 特技データの永続化テスト作成
 - [ ] [GREEN] 特技データの永続化実装
 - [ ] [REFACTOR] 特技表コンポーネントの最適化
-- [ ] [CHECK] lint/format/build の実行と確認
+- [x] [CHECK] lint/format/build の実行と確認
 
 ### フェーズ 9: キャラクター作成ページ
 
