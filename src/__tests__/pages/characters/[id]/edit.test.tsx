@@ -183,9 +183,7 @@ describe('CharacterEditPage', () => {
 
       await waitFor(() => {
         expect(screen.getByDisplayValue('テストシノビ')).toBeInTheDocument()
-        expect(
-          screen.getByDisplayValue('テストプレイヤー')
-        ).toBeInTheDocument()
+        expect(screen.getByDisplayValue('テストプレイヤー')).toBeInTheDocument()
       })
     })
 
