@@ -3,6 +3,7 @@
  */
 
 import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { ReactNode } from 'react'
 import CharacterEditPage from '@/pages/characters/[id]/edit'
 import { AuthProvider } from '@/contexts/AuthContext'
@@ -315,6 +316,236 @@ describe('CharacterEditPage', () => {
       })
 
       expect(mockPush).not.toHaveBeenCalledWith('/characters/char-1')
+    })
+  })
+
+  describe('更新機能', () => {
+    it('フォーム送信でキャラクター本体が更新される', async () => {
+      const user = userEvent
+      const mockUpdateCharacter = jest.fn().mockResolvedValue({
+        ...mockCharacter,
+        name: '更新されたシノビ',
+      })
+
+      mockFetchCharacter.mockResolvedValue(mockCharacter)
+
+      mockUseCharacters.mockReturnValue({
+        characters: [],
+        loading: false,
+        error: null,
+        fetchCharacters: jest.fn(),
+        fetchCharacter: mockFetchCharacter,
+        createCharacter: jest.fn(),
+        updateCharacter: mockUpdateCharacter,
+        deleteCharacter: jest.fn(),
+      })
+
+      const mockDelete = jest.fn(() => ({ error: null }))
+      const mockInsert = jest.fn(() => ({ error: null }))
+
+      const mockFrom = jest.fn((table: string) => {
+        if (table === 'character_skills') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                data: mockSkills,
+                error: null,
+              })),
+            })),
+            delete: jest.fn(() => ({
+              eq: mockDelete,
+            })),
+            insert: mockInsert,
+          }
+        }
+        return {
+          select: jest.fn(() => ({
+            eq: jest.fn(() => ({
+              data: mockSkills,
+              error: null,
+            })),
+          })),
+        }
+      })
+
+      mockSupabase.from = mockFrom as any
+
+      render(<CharacterEditPage />, { wrapper: Wrapper })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('テストシノビ')).toBeInTheDocument()
+      })
+
+      // シノビ名を変更
+      const nameInput = screen.getByDisplayValue('テストシノビ')
+      await user.setup().clear(nameInput)
+      await user.setup().type(nameInput, '更新されたシノビ')
+
+      // フォームを送信
+      const submitButton = screen.getByRole('button', { name: /保存/i })
+      await user.setup().click(submitButton)
+
+      await waitFor(() => {
+        expect(mockUpdateCharacter).toHaveBeenCalledWith(
+          'char-1',
+          expect.objectContaining({
+            name: '更新されたシノビ',
+          })
+        )
+      })
+    })
+
+    it('特技データが更新される（削除→挿入）', async () => {
+      const user = userEvent
+      const mockUpdateCharacter = jest.fn().mockResolvedValue(mockCharacter)
+
+      mockFetchCharacter.mockResolvedValue(mockCharacter)
+
+      mockUseCharacters.mockReturnValue({
+        characters: [],
+        loading: false,
+        error: null,
+        fetchCharacters: jest.fn(),
+        fetchCharacter: mockFetchCharacter,
+        createCharacter: jest.fn(),
+        updateCharacter: mockUpdateCharacter,
+        deleteCharacter: jest.fn(),
+      })
+
+      const mockDelete = jest.fn(() => ({ error: null }))
+      const mockInsert = jest.fn(() => ({ error: null }))
+
+      const mockFrom = jest.fn((table: string) => {
+        if (table === 'character_skills') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                data: mockSkills,
+                error: null,
+              })),
+            })),
+            delete: jest.fn(() => ({
+              eq: mockDelete,
+            })),
+            insert: mockInsert,
+          }
+        }
+        return {
+          select: jest.fn(() => ({
+            eq: jest.fn(() => ({
+              data: mockSkills,
+              error: null,
+            })),
+          })),
+        }
+      })
+
+      mockSupabase.from = mockFrom as any
+
+      render(<CharacterEditPage />, { wrapper: Wrapper })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('テストシノビ')).toBeInTheDocument()
+      })
+
+      // フォームを送信
+      const submitButton = screen.getByRole('button', { name: /保存/i })
+      await user.setup().click(submitButton)
+
+      await waitFor(() => {
+        expect(mockDelete).toHaveBeenCalledWith('character_id', 'char-1')
+        expect(mockInsert).toHaveBeenCalled()
+      })
+    })
+
+    it('更新成功後、詳細ページへリダイレクトされる', async () => {
+      const user = userEvent
+      const mockUpdateCharacter = jest.fn().mockResolvedValue(mockCharacter)
+
+      mockFetchCharacter.mockResolvedValue(mockCharacter)
+
+      mockUseCharacters.mockReturnValue({
+        characters: [],
+        loading: false,
+        error: null,
+        fetchCharacters: jest.fn(),
+        fetchCharacter: mockFetchCharacter,
+        createCharacter: jest.fn(),
+        updateCharacter: mockUpdateCharacter,
+        deleteCharacter: jest.fn(),
+      })
+
+      const mockFrom = jest.fn(() => ({
+        select: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            data: mockSkills,
+            error: null,
+          })),
+        })),
+        delete: jest.fn(() => ({
+          eq: jest.fn(() => ({ error: null })),
+        })),
+        insert: jest.fn(() => ({ error: null })),
+      }))
+
+      mockSupabase.from = mockFrom as any
+
+      render(<CharacterEditPage />, { wrapper: Wrapper })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('テストシノビ')).toBeInTheDocument()
+      })
+
+      // フォームを送信
+      const submitButton = screen.getByRole('button', { name: /保存/i })
+      await user.setup().click(submitButton)
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith('/characters/char-1')
+      })
+    })
+
+    it('更新失敗時、エラーメッセージが表示される', async () => {
+      const user = userEvent
+      const mockUpdateCharacter = jest.fn().mockResolvedValue(null)
+
+      mockFetchCharacter.mockResolvedValue(mockCharacter)
+
+      mockUseCharacters.mockReturnValue({
+        characters: [],
+        loading: false,
+        error: null,
+        fetchCharacters: jest.fn(),
+        fetchCharacter: mockFetchCharacter,
+        createCharacter: jest.fn(),
+        updateCharacter: mockUpdateCharacter,
+        deleteCharacter: jest.fn(),
+      })
+
+      const mockFrom = jest.fn(() => ({
+        select: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            data: mockSkills,
+            error: null,
+          })),
+        })),
+      }))
+
+      mockSupabase.from = mockFrom as any
+
+      render(<CharacterEditPage />, { wrapper: Wrapper })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('テストシノビ')).toBeInTheDocument()
+      })
+
+      // フォームを送信
+      const submitButton = screen.getByRole('button', { name: /保存/i })
+      await user.setup().click(submitButton)
+
+      await waitFor(() => {
+        expect(screen.getByText(/データの保存に失敗しました/i)).toBeInTheDocument()
+      })
     })
   })
 
