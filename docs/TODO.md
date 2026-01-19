@@ -166,16 +166,16 @@ TRPG ゲーム「シノビガミ」のキャラクターシートを管理する
 - [x] [REFACTOR] 詳細・編集ページの共通化（不要と判断）
 - [x] [CHECK] lint/format/build の実行と確認
 
-### フェーズ 11: キャラクター一覧・検索機能
+### フェーズ 11: キャラクター一覧・検索機能 ✅
 
-- [ ] [RED] CharacterListBoard の Supabase 連携テスト作成
-- [ ] [GREEN] CharacterListBoard Supabase 連携実装
-- [ ] [RED] 検索機能（シノビ名・プレイヤー名）のテスト作成
-- [ ] [GREEN] 検索機能実装
-- [ ] [RED] フィルタ機能（流派・階級）のテスト作成
-- [ ] [GREEN] フィルタ機能実装
-- [ ] [REFACTOR] 検索・フィルタロジックの最適化
-- [ ] [CHECK] lint/format/build の実行と確認
+- [x] [RED] CharacterListBoard の Supabase 連携テスト作成
+- [x] [GREEN] CharacterListBoard Supabase 連携実装
+- [x] [RED] 検索機能（シノビ名・プレイヤー名）のテスト作成
+- [x] [GREEN] 検索機能実装
+- [x] [RED] フィルタ機能（流派・階級）のテスト作成
+- [x] [GREEN] フィルタ機能実装
+- [x] [REFACTOR] 検索・フィルタロジックの最適化（不要と判断）
+- [x] [CHECK] lint/format/build の実行と確認
 
 ### フェーズ 12: トップページ統合
 
